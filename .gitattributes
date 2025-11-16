@@ -1,13 +1,2 @@
-Assets/Fonts/レシートフォント filter=lfs diff=lfs merge=lfs -text
-SDF.asset filter=lfs diff=lfs merge=lfs -text
-Assets/Fonts/DSEG14ModernMini-Bold filter=lfs diff=lfs merge=lfs -text
-Assets/Fonts/DSEG7ModernMini-Bold filter=lfs diff=lfs merge=lfs -text
-Assets/Fonts/GDhwGoJA-OTF112b2 filter=lfs diff=lfs merge=lfs -text
-Assets/Fonts/rounded-mplus-1p-regular filter=lfs diff=lfs merge=lfs -text
-F:/UrbanDrift/Assets/Fonts/レシートフォント[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
-F:/UrbanDrift/Assets/Fonts/DSEG7ModernMini-Bold[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
-Assets/Fonts/DSEG7ModernMini-Bold[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
-Assets/Fonts/GDhwGoJA-OTF112b2.otf filter=lfs diff=lfs merge=lfs -text
-Assets/Fonts/DSEG14ModernMini-Bold[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
-Assets/Fonts/GDhwGoJA-OTF112b2[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
-Assets/Fonts/rounded-mplus-1p-regular[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
+UrbanDrift/Assets/Fonts/DSEG14ModernMini-BoldSDF.asset filter=lfs diff=lfs merge=lfs -text
+*.asset filter=lfs diff=lfs merge=lfs -text
