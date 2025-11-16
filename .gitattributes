@@ -7,3 +7,7 @@ Assets/Fonts/rounded-mplus-1p-regular filter=lfs diff=lfs merge=lfs -text
 F:/UrbanDrift/Assets/Fonts/レシートフォント[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
 F:/UrbanDrift/Assets/Fonts/DSEG7ModernMini-Bold[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
 Assets/Fonts/DSEG7ModernMini-Bold[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
+Assets/Fonts/GDhwGoJA-OTF112b2.otf filter=lfs diff=lfs merge=lfs -text
+Assets/Fonts/DSEG14ModernMini-Bold[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
+Assets/Fonts/GDhwGoJA-OTF112b2[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
+Assets/Fonts/rounded-mplus-1p-regular[[:space:]]SDF.asset filter=lfs diff=lfs merge=lfs -text
