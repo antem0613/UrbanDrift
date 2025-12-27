@@ -19,10 +19,4 @@ public class CityGenerator : MonoBehaviour
 
         Instantiate(buildings[Random.Range(0, buildings.Count)],transform.position,rot,transform.parent);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

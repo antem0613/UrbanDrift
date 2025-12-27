@@ -11,7 +11,6 @@ using System.Collections;
 public class GameManagerHelper : MonoBehaviour
 {
     public TMP_Text TMP_Score, TMP_TuttorialCount, TMP_TutorialPage,TMP_HighScore;
-    public GameManager gameManager;
     public GameObject GO_Score;
     InputAction IA_Enter, IA_Escape, IA_Pause, IA_Back;
     UrbanDriftInput inputs;
@@ -60,7 +59,7 @@ public class GameManagerHelper : MonoBehaviour
             PlayerPrefs.Save();
         }
 
-        gameManager.highScore = PlayerPrefs.GetInt("highScore");
+        GameManager.instance.highScore = PlayerPrefs.GetInt("highScore");
         inputs = new UrbanDriftInput();
         IA_Enter = InputSystem.actions.FindAction("Enter");
         IA_Escape = InputSystem.actions.FindAction("Escape");
@@ -74,9 +73,9 @@ public class GameManagerHelper : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GO_Score.SetActive(gameManager.endTutorial);
-        TMP_Score.text = Mathf.CeilToInt(gameManager.score).ToString();
-        TMP_HighScore.text = gameManager.highScore.ToString();
+        GO_Score.SetActive(GameManager.instance.endTutorial);
+        TMP_Score.text = Mathf.CeilToInt(GameManager.instance.score).ToString();
+        TMP_HighScore.text = GameManager.instance.highScore.ToString();
 
         if (!GameManager.instance.endTutorial)
         {
@@ -89,23 +88,21 @@ public class GameManagerHelper : MonoBehaviour
             GameManager.instance.OnEnter();
         }
 
-        if (IA_Escape.triggered)
+        //ゲーム中の場合アプリケーション終了、それ以外はポーズ
+        if (IA_Escape.triggered || IA_Pause.triggered)
         {
-            GameManager.instance.OnEscape();
-        }
-
-        if (IA_Pause.triggered && GameManager.instance.IsGaming)
-        {
-            GameManager.instance.OnEscape();
+            GameManager.instance.OnPause();
         }
 
         if(IA_Back.triggered)
         {
+            //ポーズメニューを閉じる
             if (GameManager.instance.isPaused)
             {
-                GameManager.instance.OnEscape();
+                GameManager.instance.OnPause();
             }
 
+            //セッティングパネルを閉じる
             if (GameManager.instance.SettingPanel.activeSelf)
             {
                 CloseSetting();
@@ -113,12 +110,14 @@ public class GameManagerHelper : MonoBehaviour
         }
     }
 
+    //入力をUI用に切り替え
     void OnEnableUI(object obj,EventArgs e)
     {
         inputs.UI.Enable();
         inputs.Player.Disable();
     }
 
+    //入力をPlayer用に切り替え
     void OnEnablePlayer(object obj,EventArgs e)
     {
         inputs.Player.Enable();
@@ -140,6 +139,7 @@ public class GameManagerHelper : MonoBehaviour
         GameManager.instance.eventSystem?.SetSelectedGameObject(GameManager.instance.defaultSelect);
         GameManager.instance.TitlePanel.SetActive(false);
 
+        //カメラ移動の待機
         yield return new WaitForSeconds(1.5f);
 
         float val = 0;
@@ -166,6 +166,7 @@ public class GameManagerHelper : MonoBehaviour
         GameManager.instance.InitialCamera.SetActive(true);
         GameManager.instance.eventSystem?.SetSelectedGameObject(GameManager.instance.defaultSelect);
 
+        //カメラ移動の待機
         yield return new WaitForSeconds(1);
 
         GameManager.instance.TitlePanel.SetActive(true);

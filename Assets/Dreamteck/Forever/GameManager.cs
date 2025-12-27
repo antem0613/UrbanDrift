@@ -28,9 +28,9 @@ namespace UrbanDrift
     {
         public Slider Sld_InputLimit;
         [SerializeField]
-        private AnimationCurve SliderColor;
+        AnimationCurve SliderColor;
         [SerializeField]
-        private Image SliderFill;
+        Image SliderFill;
 
         public float timeSpeed;
         public bool TimeGoing;
@@ -75,7 +75,7 @@ namespace UrbanDrift
         [HideInInspector]
         public int highScore;
 
-        private GameObject Sun;
+        GameObject Sun;
 
         public GameObject InitialCamera, GameCamera, Logo, StartButton, TitlePanel,OnGamingPanel,GameOverPanel, LoadingPanel,PausePanel, SettingCamera, SettingPanel;
         public GameObject[] TutorialPanels;
@@ -112,8 +112,6 @@ namespace UrbanDrift
         [HideInInspector]
         public int currentPage;
 
-        Color fillColor = Color.white;
-
         public event EventHandler Morning;
         public event EventHandler Evening;
         public event EventHandler OnCrash;
@@ -135,6 +133,8 @@ namespace UrbanDrift
             OnewaySigns = new List<Sign>();
             DummySigns = new List<Sign>();
 
+
+            //標識を進行可能な方向ごとに分類
             foreach (var sign in Signs)
             {
                 if (sign.Oneway)
@@ -189,6 +189,7 @@ namespace UrbanDrift
             IsGameOver = false;
             IsGaming = false;
 
+            //昼と夜の信号マテリアルリストを作成
             M_Traffics = new List<List<Material>>() { M_DayTraffics, M_NightTraffics };
 
             BGM.clip = CityEnv;
@@ -199,6 +200,7 @@ namespace UrbanDrift
             IsInitialized = true;
         }
 
+        //ロード中のアニメーションと遷移処理
         IEnumerator WhileLoading()
         {
             BGM.Stop();
@@ -249,13 +251,14 @@ namespace UrbanDrift
             }
         }
 
+        //ディレクショナルライトの回転で時間を定義
+        //昼夜の切り替えと窓の光度調整
         void DayNightControl()
         {
             Sun.transform.Rotate(Time.deltaTime * timeSpeed, 0f, 0f);
 
             if (Sun.transform.rotation.eulerAngles.x >= 270f && (timeState == TimeState.Day || !IsInitialized))
             {
-                Debug.Log("Night Coming");
                 M_Window.SetFloat("_EmissiveIntensity", windowIntensity);
 
                 OnMorning();
@@ -265,7 +268,6 @@ namespace UrbanDrift
 
             if (Sun.transform.rotation.eulerAngles.x <= 90f && (timeState == TimeState.Night || !IsInitialized))
             {
-                Debug.Log("Day Coming");
                 M_Window.SetFloat("_EmissiveIntensity", 0f);
 
                 OnEvening();
@@ -274,7 +276,7 @@ namespace UrbanDrift
             }
         }
 
-        public void OnEscape()
+        public void OnPause()
         {
             if (IsGaming)
             {
@@ -347,19 +349,8 @@ namespace UrbanDrift
             }
         }
 
-        Direction CombineDirections(IEnumerable<Direction> directions)
-        {
-            Direction res = Direction.None;
-
-            foreach (var dir in directions)
-            {
-                res |= dir;
-            }
-
-            return res;
-        }
-
-        public void RemoveTrafficarg(int i)
+        //外部から標識と信号の状態を削除
+        public void RemoveTrafficArg(int i)
         {
             trafficArgs.RemoveAt(i);
         }
@@ -374,14 +365,17 @@ namespace UrbanDrift
             return trafficArgs[0].allowed;
         }
 
+        //新しい信号パターンと標識を生成
         public IEnumerator SetTraffic()
         {
+            //他の処理が終わるまで待機
             while (isBusy)
             {
                 yield return null;
             }
 
             isBusy = true;
+            //パターンリストを初期化
             List<TrafficLevel> levelTable = new List<TrafficLevel>() { TrafficLevel.Green, TrafficLevel.Yellow, TrafficLevel.Red };
             List<float> levelWeights = new List<float>() { 0.525f, 0.15f, 0.325f };
 
@@ -399,6 +393,14 @@ namespace UrbanDrift
             float rand;
             bool anyUsed = false;
             int prev = 0;
+
+            /*信号パターンを生成
+             * 緑→黄→赤の順で3パターン生成
+             * 必ず1つは進行可能なパターンを含むようにする
+             * 信号のランプごとにランプの色を決定、色は緑→黄→緑のように戻らない
+             * これまでのパターンに応じて選択肢を減らす
+             * 黄信号は進行不可になる可能性があるため進行可能なパターンの確保に数えない
+             */
 
             for (int i = 0; i < 3; i++)
             {
@@ -492,78 +494,77 @@ namespace UrbanDrift
             List<List<Sign>> signsList = new List<List<Sign>>() { DummySigns , ForwardSigns, LeftSigns, RightSigns, ForwardLeftSigns, ForwardRightSigns, LeftRightSigns};
             List<Sign> candidatedSigns = new List<Sign>();
 
+            //信号のパターンから進行可能なルートを残すように標識リストを調整
             switch (args.allowed)
             {
                 case Direction.Forward:
-                    signsList.Swap(1,6);
                     signsList.Remove(ForwardSigns);
                     signsList.Remove(ForwardRightSigns);
                     signsList.Remove(ForwardLeftSigns);
                     break;
+
                 case Direction.Left:
-                    signsList.Swap(2, 5);
                     signsList.Remove(LeftRightSigns);
                     signsList.Remove(LeftSigns);
                     signsList.Remove(ForwardLeftSigns);
                     break;
+
                 case Direction.Right:
-                    signsList.Swap(3, 4);
                     signsList.Remove(LeftRightSigns);
                     signsList.Remove(ForwardRightSigns);
                     signsList.Remove(RightSigns);
                     break;
+
                 case (Direction.Forward | Direction.Left):
-                    signsList.Swap(4, 6);
                     signsList.Remove(ForwardLeftSigns);
 
                     if (UnityEngine.Random.value > 0.5f)
                     {
-                        signsList.Swap(1, 5);
                         signsList.Remove(ForwardSigns);
                     }
                     else
                     {
-                        signsList.Swap(2, 5);
                         signsList.Remove(LeftSigns);
                     }
                     break;
+
                 case (Direction.Forward | Direction.Right):
                     if (UnityEngine.Random.value > 0.5f)
                     {
-                        signsList.Swap(1, 6);
                         signsList.Remove(ForwardSigns);
                     }
                     else
                     {
-                        signsList.Swap(3, 6);
                         signsList.Remove(RightSigns);
                     }
 
                     signsList.Remove(ForwardRightSigns);
                     break;
+
                 case (Direction.Left | Direction.Right):
                     signsList.Remove(LeftRightSigns);
 
                     if (UnityEngine.Random.value > 0.5f)
                     {
-                        signsList.Swap(2, 5);
                         signsList.Remove(LeftSigns);
                     }
                     else
                     {
-                        signsList.Swap(3, 5);
                         signsList.Remove(RightSigns);
                     }
                     break;
             }
 
+            //選定された標識リストを統合
             for(int i = 0; i<signsList.Count;i++)
             {
                 candidatedSigns.AddRange(signsList[i]);
             }
 
+            //標識リストをシャッフル
             candidatedSigns.Shuffle();
 
+            //重みをリセット
             int arrowTrial = 0;
             float sum = 0, val;
 
@@ -572,7 +573,12 @@ namespace UrbanDrift
                 sum += candidatedSigns[i].chance;
             }
 
-            for(int signUsed = 0; signUsed<maxSignCount;)
+            //標識を信号の進行可能なルートに応じて配置
+            //最大数まで、または配置可能な場所がなくなるまで繰り返す
+            //配置可能な場所がなくなった場合はループを抜ける
+            //配置可能な場所がある場合はランダムに標識を選択
+            //一方通行標識は左右に1つずつまで配置可能
+            for (int signUsed = 0; signUsed<maxSignCount;)
             {   
                 val = UnityEngine.Random.value * sum;
 
@@ -611,6 +617,7 @@ namespace UrbanDrift
                                     break;
                                 }
 
+                                args.allowed &= ~constraint;
                                 args.neutral &= ~constraint;
                             }
 
@@ -635,6 +642,7 @@ namespace UrbanDrift
                                     break;
                                 }
 
+                                args.allowed &= ~constraint;
                                 args.neutral &= ~constraint;
                             }
 
@@ -660,11 +668,14 @@ namespace UrbanDrift
                 }
             }
 
+            //黄信号が赤になるか決定
+            //黄信号が正解ルートの場合は赤にならない
             if (args.neutral != Direction.None && (result & ~args.neutral) != Direction.None)
             {
                 args.turnRed = UnityEngine.Random.value < 0.5f;
             }
 
+            //赤になる場合は進行可能なルートから中立のルートを除外
             if (args.turnRed)
             {
                 args.allowed = result & ~args.neutral;
@@ -681,7 +692,6 @@ namespace UrbanDrift
             
             trafficArgs.Add(args);
             isBusy = false;
-            yield return null;
         }
 
         public void StartGame()

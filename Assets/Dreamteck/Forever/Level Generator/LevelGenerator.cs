@@ -1198,7 +1198,7 @@ namespace Dreamteck.Forever
                 if (segment.segmentKind == 0)
                 {
                     correctWay = GameManager.instance.GetCorrectWay();
-                    GameManager.instance.RemoveTrafficarg(0);
+                    GameManager.instance.RemoveTrafficArg(0);
                     yield return GameManager.instance.SetTraffic();
                 }
             }

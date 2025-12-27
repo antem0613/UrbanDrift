@@ -1,0 +1,10 @@
+﻿<Solution>
+  <Project Path="Dreamteck.Splines.Editor.csproj" />
+  <Project Path="Dreamteck.Splines.csproj" />
+  <Project Path="Dreamteck.Forever.Editor.csproj" />
+  <Project Path="Dreamteck.Forever.csproj" />
+  <Project Path="Dreamteck.Utilities.csproj" />
+  <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="Dreamteck.Utilities.Editor.csproj" />
+  <Project Path="Assembly-CSharp-Editor.csproj" />
+</Solution>
