@@ -7,10 +7,11 @@ using UnityEngine.EventSystems;
 using System;
 using Unity.Cinemachine;
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 
 public class GameManagerHelper : MonoBehaviour
 {
-    public TMP_Text TMP_Score, TMP_TuttorialCount, TMP_TutorialPage,TMP_HighScore;
+    public TMP_Text TMP_Score, TMP_TuttorialCount, TMP_TutorialPage, TMP_HighScore, TMP_CountDown;
     public GameObject GO_Score;
     InputAction IA_Enter, IA_Escape, IA_Pause, IA_Back;
     UrbanDriftInput inputs;
@@ -67,6 +68,8 @@ public class GameManagerHelper : MonoBehaviour
         IA_Back = InputSystem.actions.FindAction("Back");
         GameManager.instance.EnablePlayerInput += OnEnablePlayer;
         GameManager.instance.EnableUIInput += OnEnableUI;
+        GameManager.instance.OnEndTutorial += StartCountDown;
+        TMP_CountDown.gameObject.SetActive(false);
         OnEnableUI(this, EventArgs.Empty);
     }
 
@@ -85,22 +88,18 @@ public class GameManagerHelper : MonoBehaviour
 
         if (IA_Enter.triggered)
         {
-            GameManager.instance.OnEnter();
+            GameManager.instance.NextTutorial();
         }
 
         //ゲーム中の場合アプリケーション終了、それ以外はポーズ
-        if (IA_Escape.triggered || IA_Pause.triggered)
+        if (IA_Pause.triggered)
         {
             GameManager.instance.OnPause();
         }
 
         if(IA_Back.triggered)
         {
-            //ポーズメニューを閉じる
-            if (GameManager.instance.isPaused)
-            {
-                GameManager.instance.OnPause();
-            }
+            GameManager.instance.PreviousTutorial();
 
             //セッティングパネルを閉じる
             if (GameManager.instance.SettingPanel.activeSelf)
@@ -192,5 +191,27 @@ public class GameManagerHelper : MonoBehaviour
 
         PlayerPrefs.SetInt("ScreenMode", dropdownQuality.value);
         PlayerPrefs.Save();
+    }
+
+    void StartCountDown(object sender, EventArgs e)
+    {
+        StartCoroutine(CountDown());
+    }
+
+    IEnumerator CountDown()
+    {
+        yield return new WaitForSeconds(2.5f);
+        TMP_CountDown.text = "Ready";
+        TMP_CountDown.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1f);
+        TMP_CountDown.text = "3";
+        yield return new WaitForSeconds(1f);
+        TMP_CountDown.text = "2";
+        yield return new WaitForSeconds(1f);
+        TMP_CountDown.text = "1";
+        yield return new WaitForSeconds(1f);
+        TMP_CountDown.text = "Go!";
+        yield return new WaitForSeconds(0.5f);
+        TMP_CountDown.gameObject.SetActive(false);
     }
 }

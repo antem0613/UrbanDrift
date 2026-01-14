@@ -111,15 +111,6 @@ public partial class @UrbanDriftInput: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Escape"",
-                    ""type"": ""Button"",
-                    ""id"": ""a5b5d14a-95b1-4042-9ac5-298d8b7a7964"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": ""Press(behavior=1)"",
-                    ""initialStateCheck"": false
-                },
-                {
                     ""name"": ""Pause"",
                     ""type"": ""Button"",
                     ""id"": ""e7eb128b-35a3-4bdd-8909-6fe4f0e371eb"",
@@ -328,28 +319,6 @@ public partial class @UrbanDriftInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""fbc832bb-85a3-44ce-908a-5c174a660200"",
-                    ""path"": ""<Keyboard>/escape"",
-                    ""interactions"": ""Press"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Escape"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d61c50ca-eb5f-40ad-89f4-670bac798147"",
-                    ""path"": ""<Gamepad>/{Menu}"",
-                    ""interactions"": ""Press"",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Escape"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
                     ""id"": ""0a4628db-46bd-4f6c-9c04-f1e1895258cf"",
                     ""path"": ""<Gamepad>/{Menu}"",
                     ""interactions"": ""Press"",
@@ -361,8 +330,19 @@ public partial class @UrbanDriftInput: IInputActionCollection2, IDisposable
                 },
                 {
                     ""name"": """",
-                    ""id"": ""fbf6b0b3-9ce1-4796-a8af-8b20c19a373b"",
+                    ""id"": ""57f914b4-dabc-4911-8028-98f2efbdb3ae"",
                     ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Pause"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""fbf6b0b3-9ce1-4796-a8af-8b20c19a373b"",
+                    ""path"": ""<Keyboard>/backspace"",
                     ""interactions"": ""Press"",
                     ""processors"": """",
                     ""groups"": """",
@@ -375,6 +355,17 @@ public partial class @UrbanDriftInput: IInputActionCollection2, IDisposable
                     ""id"": ""48b73527-df7a-4831-85e5-f0c4d2fbc714"",
                     ""path"": ""<Gamepad>/{Back}"",
                     ""interactions"": ""Press"",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Back"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4f69f88d-346a-4e4e-a5ae-fa6e97bf3e1e"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""Back"",
@@ -967,7 +958,6 @@ public partial class @UrbanDriftInput: IInputActionCollection2, IDisposable
         m_Player = asset.FindActionMap("Player", throwIfNotFound: true);
         m_Player_Move = m_Player.FindAction("Move", throwIfNotFound: true);
         m_Player_Enter = m_Player.FindAction("Enter", throwIfNotFound: true);
-        m_Player_Escape = m_Player.FindAction("Escape", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
         m_Player_Back = m_Player.FindAction("Back", throwIfNotFound: true);
         // UI
@@ -1065,7 +1055,6 @@ public partial class @UrbanDriftInput: IInputActionCollection2, IDisposable
     private List<IPlayerActions> m_PlayerActionsCallbackInterfaces = new List<IPlayerActions>();
     private readonly InputAction m_Player_Move;
     private readonly InputAction m_Player_Enter;
-    private readonly InputAction m_Player_Escape;
     private readonly InputAction m_Player_Pause;
     private readonly InputAction m_Player_Back;
     /// <summary>
@@ -1087,10 +1076,6 @@ public partial class @UrbanDriftInput: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/Enter".
         /// </summary>
         public InputAction @Enter => m_Wrapper.m_Player_Enter;
-        /// <summary>
-        /// Provides access to the underlying input action "Player/Escape".
-        /// </summary>
-        public InputAction @Escape => m_Wrapper.m_Player_Escape;
         /// <summary>
         /// Provides access to the underlying input action "Player/Pause".
         /// </summary>
@@ -1131,9 +1116,6 @@ public partial class @UrbanDriftInput: IInputActionCollection2, IDisposable
             @Enter.started += instance.OnEnter;
             @Enter.performed += instance.OnEnter;
             @Enter.canceled += instance.OnEnter;
-            @Escape.started += instance.OnEscape;
-            @Escape.performed += instance.OnEscape;
-            @Escape.canceled += instance.OnEscape;
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
@@ -1157,9 +1139,6 @@ public partial class @UrbanDriftInput: IInputActionCollection2, IDisposable
             @Enter.started -= instance.OnEnter;
             @Enter.performed -= instance.OnEnter;
             @Enter.canceled -= instance.OnEnter;
-            @Escape.started -= instance.OnEscape;
-            @Escape.performed -= instance.OnEscape;
-            @Escape.canceled -= instance.OnEscape;
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
@@ -1480,13 +1459,6 @@ public partial class @UrbanDriftInput: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnEnter(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "Escape" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnEscape(InputAction.CallbackContext context);
         /// <summary>
         /// Method invoked when associated input action "Pause" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
         /// </summary>

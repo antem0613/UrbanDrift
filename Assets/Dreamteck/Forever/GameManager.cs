@@ -118,6 +118,7 @@ namespace UrbanDrift
         public event EventHandler OnReset;
         public event EventHandler EnablePlayerInput;
         public event EventHandler EnableUIInput;
+        public event EventHandler OnEndTutorial;
 
         private void Start()
         {
@@ -306,7 +307,7 @@ namespace UrbanDrift
             }
         }
 
-        public void OnEnter()
+        public void NextTutorial()
         {
             if (!endTutorial && IsGaming && !isPaused)
             {
@@ -321,11 +322,25 @@ namespace UrbanDrift
                 {
                     endTutorial = true;
                     TutorialPanels[0].SetActive(false);
+                    OnEndTutorial?.Invoke(this, EventArgs.Empty);
 
                     if (TimeGoing)
                     {
                         _timeGoing = true;
                     }
+                }
+            }
+        }
+
+        public void PreviousTutorial()
+        {
+            if (!endTutorial && IsGaming && !isPaused)
+            {
+                if (currentPage > 1)
+                {
+                    TutorialPanels[currentPage].SetActive(false);
+                    currentPage--;
+                    TutorialPanels[currentPage].SetActive(true);
                 }
             }
         }
@@ -728,6 +743,7 @@ namespace UrbanDrift
 
         void StartTutorial()
         {
+            levelGenerator.generateSegmentsAhead = 1;
             if (!endTutorial)
             {
                 if (!TutorialPanels[0].activeSelf)
@@ -742,6 +758,11 @@ namespace UrbanDrift
 
                     TutorialPanels[1].SetActive(true);
                 }
+            }
+            else
+            {
+                OnEndTutorial?.Invoke(this, EventArgs.Empty);
+                levelGenerator.generateSegmentsAhead = 4;
             }
         }
         
@@ -768,6 +789,7 @@ namespace UrbanDrift
 
             GameOverPanel.SetActive(false);
             OnGamingPanel.SetActive(true);
+            
         }
 
         public void BackToTitle()

@@ -581,6 +581,7 @@ namespace Dreamteck.Forever
                 DestroyImmediate(b);
             }
             _generatedCity.Clear();
+            generateSegmentsAhead = 2;
             StartCoroutine(RestartRoutine(readyCallback));
         }
 
